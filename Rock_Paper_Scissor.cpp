@@ -1,71 +1,78 @@
-#include<iostream>
-#include<vector>
-#include<random>
+#include <iostream>
+#include <vector>
+#include <random>
 using namespace std;
 
-class game{
-    private:
-        string choice[3] = {"stone","paper","scissor"};
-        string player;
-        int comScore , plyScore;
-    public:
-        game(string player){
-            this->player = player;
-        }
+class game {
+private:
+    string choice[3] = {"stone", "paper", "scissor"};
+    string player;
+    int comScore, plyScore;
 
-        game(){
-            comScore = 0;
-            plyScore = 0;
-        }
+public:
+    game(string player) {
+        this->player = player;
+        comScore = 0;
+        plyScore = 0;
+    }
 
-        void startGame(string *player,int guess);
-        int randomGenerate();
+    int randomGenerate();
+    void startGame();
 };
 
-int game ::randomGenerate(){
+int game::randomGenerate() {
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<> distr(0, 2);
-
-    int randomNumber = distr(gen);
-
-    return randomNumber;
-
+    return distr(gen);
 }
-void game ::startGame(string *player,int guess){
-    string comGuess = choice[guess];
-    string plyGuess = *player;
-    bool ply = true;
-    while(true){
-        if(comGuess == "stone" && plyGuess == "paper"){
-            cout<<"Player win "<<endl;
+
+void game::startGame() {
+    char ch;
+    do {
+        string plyGuess;
+        cout << "\nEnter your choice (stone/paper/scissor): ";
+        getline(cin, plyGuess);
+
+        int guess = randomGenerate();
+        string comGuess = choice[guess];
+
+        cout << "Computer chose: " << comGuess << endl;
+
+        if (comGuess == plyGuess) {
+            cout << "It's a draw!" << endl;
+        }
+        else if (
+            (comGuess == "stone" && plyGuess == "paper") ||
+            (comGuess == "paper" && plyGuess == "scissor") ||
+            (comGuess == "scissor" && plyGuess == "stone")
+        ) {
+            cout << "Player wins!" << endl;
             plyScore++;
         }
-        else if(comGuess == "scissor" && plyGuess == "paper"){
-            cout<<"Player Loose"<<endl;
-            comScore++;
-        }
-        else if(comGuess == "scissor" && plyGuess == "stone"){
-            cout<<"Player win"<<endl;
-            plyScore++;
-        }
-        else if(comGuess == plyGuess){
-            cout<<"Its a draw"<<endl;
-        }
-        else{
-            cout<<"Player loose"<<endl;
+        else {
+            cout << "Player loses!" << endl;
             comScore++;
         }
 
-        cout<<"Do you want to play again ?(Y/N):";
-        
-    }
+        cout << "Do you want to play again? (Y/N): ";
+        cin >> ch;
+        cin.ignore(); // To consume leftover newline character
+
+    } while (ch == 'Y' || ch == 'y');
+
+    cout << "\nFinal Score:\n";
+    cout << "Player Score: " << plyScore << endl;
+    cout << "Computer Score: " << comScore << endl;
 }
-int main(){
-    string player;
-    int guess;
-    game *obj = new game(player);
 
-    guess = obj->randomGenerate();
-    
+int main() {
+    string playerName;
+    cout << "Enter your name: ";
+    getline(cin, playerName);
+
+    game obj(playerName);
+    obj.startGame();
+
+    return 0;
 }
