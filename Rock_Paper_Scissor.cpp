@@ -13,8 +13,7 @@ class game{
 };
 
 int main(){
-    string user,user;
-   
+    string user;
     game *obj = new game(user);
     
 }
